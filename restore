@@ -1,0 +1,46 @@
+#include<stdio.h>
+#include<unistd.h>
+#include<ctype.h>
+#!/usr/bin/python
+import argparse
+from commands import getoutput
+from os import system
+
+int main(int argc, char ** argv){
+	if(argc == -h){
+		printf("Usage:  %s \n Numbers piped in on stdin will be extracted and totaled.  double-precision floating point math will be used.\n", argv[0]);
+		return 1;
+	}
+	char buffer[1024];
+	char currnum[128];
+	int currnumsize = 0;
+	char period_yet = 0;
+	ssize_t readlen;
+	readlen = read(0, buffer, 1023);
+	while(readlen > 0){
+		for(int i = 0; i < readlen; i++){
+			if(isdigit(buffer[i])){
+				currnum[currnumsize] = buffer[i];
+				currnumsize++;
+			} else if(buffer[i] == '.' && !period_yet) {
+				currnum[currnumsize] = buffer[i];
+				currnumsize++;
+				period_yet = 1;
+			} else if(buffer[i] == ',') {
+				continue;
+			} else {
+				if(currnumsize){
+					currnum[currnumsize] = 0;
+					double next_number;
+					sscanf(currnum, "%lf", &next_number);
+					total += next_number;
+					currnumsize = 0;
+					period_yet = 0;
+				}
+			}
+		}
+		readlen = read(0, buffer, 1023);
+	}
+	printf("%lf\n", total);
+	return 0;
+}

@@ -1,0 +1,31 @@
+#!/usr/bin/python
+import argparse
+from commands import getoutput
+from os import system
+
+parser = argparse.ArgumentParser(description="This tool compresses and archives files and directories.")
+
+#parser.add_argument("-z", metavar='expression',  help="specifies that the tar archive should be compressed with gzip", default="")
+#parser.add_argument("-j", help="specifies that the tar archive should be compressed with bzip2", action="store_true");
+parser.add_argument("-e", metavar='filename' ,help="specifies that the tar archive should be encrypted");
+parser.add_argument("-r", metavar='expression',  help="specifies that the tar archive should include directories", default= " ")
+parser.add_argument("-d", metavar='directory' ,help="specifies the directory to archive", default="$HOME");
+group = parser.add_mutually_exclusive_group()
+group.add_argument('-j' , help="specifies that the tar archive should be compressed with bzip2", action='store_true')
+group.add_argument('-z' , metavar='expression',  help="specifies that the tar archive should be compressed with gzip", action='store_false')
+args = parser.parse_args()
+
+system("tar cvf " + args.d +".tar -c --recursive " + args.d )
+#system("tar cvf backup.tar.gz -c --recursive "+args.d)
+if args.z:
+        filename = getoutput ("echo " + args.z+ ".zip");
+        print "backup filename: ", filename
+	lines = system("gzip " + args.z )
+if args.j:
+	filename = getoutput ("echo " + args.j+ ".bzip2")
+	print "backup filename: ", filename
+	lines = system("bzip2 "+args.j)
+if args.e:
+	filename = getoutput("echo " + args.e+ ".aes")
+	print "encrypted filename: " + filename
+	lines = system("aespipe < " + args.e + "> " +args.e + ".aes")	

@@ -1,0 +1,30 @@
+#!/usr/bin/python
+from commands import getoutput
+import argparse
+import os
+
+
+parser = argparse.ArgumentParser(description="Tool to associate usernames with page visits.")
+parser.add_argument("-a", metavar="username", help="List IP addresses for a particular user", default=" ")
+parser.add_argument("-b", help="List all users");
+parser.add_argument("-c", help="Show a report on which IP addresses each user has used");
+parser.add_argument("-d", help="For a particular IP address, list all pages viewed" );
+parser.add_argument("-e", help="Show a report on which pages each user has viewed" );
+args = parser.parse_args()
+
+if args.a:
+        ans= getoutput("last | sort | grep " + args.a + " |sort | uniq")
+        print ans
+
+elif args.b:
+        ans = getoutput("last | sort | awk '{print $1'}|sort | uniq")
+        print ans
+
+elif args.c:
+        ans = getoutput("")
+        print ans
+
+elif args.d:
+        ans = getoutput("")
+        print ans
+
